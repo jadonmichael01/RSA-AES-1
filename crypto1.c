@@ -84,6 +84,10 @@ int main()
     if (RAND_bytes(aes_key, sizeof(aes_key)) != 1)
         handleErrors();
 
+    // Create a copy of the original IV
+    unsigned char original_iv[AES_BLOCK_SIZE];
+    memcpy(original_iv, iv, sizeof(iv));
+
     // Encrypt using AES
     encryptAES((const unsigned char *)message, message_len, aes_key, iv, aes_ciphertext);
 
@@ -93,8 +97,8 @@ int main()
         printf("%02x", aes_ciphertext[i]);
     printf("\n");
 
-    // Decrypt AES ciphertext
-    decryptAES(aes_ciphertext, message_len, aes_key, iv, aes_decrypted);
+    // Decrypt AES ciphertext using the original IV
+    decryptAES(aes_ciphertext, message_len, aes_key, original_iv, aes_decrypted);
     printf("AES Decrypted: %s\n", aes_decrypted);
 
     // Generate RSA key pair
