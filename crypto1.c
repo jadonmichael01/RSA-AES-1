@@ -5,14 +5,20 @@
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
+#include <openssl/err.h>
+
 
 #define AES_KEY_SIZE 256
 
 void handleErrors()
 {
-    printf("An error occurred.\n");
+    unsigned long error_code = ERR_get_error();
+    char error_string[256];
+    ERR_error_string_n(error_code, error_string, sizeof(error_string));
+    fprintf(stderr, "An error occurred: %s\n", error_string);
     exit(1);
 }
+
 
 void encryptAES(const unsigned char *plaintext, int plaintext_len, unsigned char *key, unsigned char *iv, unsigned char *ciphertext)
 {
